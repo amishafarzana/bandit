@@ -12,6 +12,8 @@ ssh bandit0@bandit.labs.overthewire.org -p 2220
 ls
 cat readme
 ```
+[Screenshot 1](screenshots/level01-1.png) | [Screenshot 2](screenshots/level01-2.png)
+
 SSH connected me to the port, and then I entered the given password bandit0. ls command listed all the files in the home directory - there was only one called readme. cat command displayed the contents of the file, inside which there was the password to Level 1. 
 ### Password 
 <details> 
