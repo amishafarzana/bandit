@@ -110,7 +110,7 @@ cat ./maybehere07/.file2
 ```
 [Screenshot of Terminal](screenshots/level56.png)
 
-In this case, there were many ASCII text files so doing the `find` command by size was more efficient. 
+In this case, there were many ASCII text files so doing the `find` command by size first was more efficient. 
 
 ## Level 6 -> 7 
 ### Objective 
@@ -149,7 +149,7 @@ Find the password for the next level which is stored in the file data.txt next t
 - `grep` : Searches for specific text patterns inside files
 ### Solution 
 ```bash
-ssh bandit7@bandit.labs.overthewire.og -p 2220
+ssh bandit7@bandit.labs.overthewire.org -p 2220
 ls
 grep millionth data.txt
 ```
@@ -161,6 +161,38 @@ grep millionth data.txt
 - `-n` : Shows the line number of the match
 - `-c` : Counts the number of lines that match
 - `-w` : Whole word
+- `-l` : Lists the files that have matches
 
+Note: `grep "^millionth"` means the line starts with millionth, and `grep "millionth$"` means the line ends with millionth.
 ## Level 8 -> 9 
+### Objective 
+Find the password for level 9 which is stored in the file data.txt and is the only line of text that occurs only once
+### Commands Used 
+- `sort` : Rearranges the text in ascending order
+- `uniq` : Filters out *adjacent*, *consecutive* (very important - needs to be sorted) duplicate lines
+- `-u` : Prints only the line that is completely unique
+### Solution 
+```bash
+ls
+sort data.txt | uniq -u
+```
+[Screenshot of Terminal](screenshots/level89.png)
 
+`|` feeds the newly sorted output into the next command 
+
+Note: `>` can be used to feed the output into a new file
+## Level 9 -> 10 
+### Objective 
+Find the password for the next level, which is stored in the file data.txt in one of the few human-readable strings, preceded by several ‘=’ characters.
+### Commands Used
+- `ls`
+- `strings` : : Prints sequence of readable text characters 
+- `grep`
+### Solution 
+```bash
+ls
+strings data.txt | grep "==="
+```
+[Screenshot of Terminal](screenshots/level910.png)
+
+I tried doing just `grep "===" data.txt` at first, but that didn't work because it read the binary data as well. `strings` was necessary to narrow it down to the human readable text characters first. 
