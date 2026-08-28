@@ -196,3 +196,18 @@ strings data.txt | grep "==="
 [Screenshot of Terminal](screenshots/level910.png)
 
 I tried doing just `grep "===" data.txt` at first, but that didn't work because it read the binary data as well. `strings` was necessary to narrow it down to the human readable text characters first. 
+## Level 10 -> 11 
+### Objective 
+Find the password for the next level stored in the file data.txt, which contains base64 encoded data
+### Commands Used 
+- `ls`
+- `base64 -d` : Decodes Base64 to human readable text
+### Solution 
+```bash
+ls
+base64 -d data.txt
+```
+[Screenshot of Terminal](screenshots/level1011.png)
+
+Base64 is binary data represented as plain text using 64 ASCII characters. It can usually be identified by = or == padding at the end. `base64 -d` converts it to human readable text. 
+## Level 11 -> 12 
