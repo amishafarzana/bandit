@@ -1,4 +1,6 @@
 # OverTheWire's Bandit Challenge
+This repo documents my progress through [OverTheWire's Bandit wargame](https://overthewire.org/wargames/bandit/) up to Level 22.
+I have detailed the objective of each level, the commands I used and a brief description of each, as well as an explanation of the steps I used to reach the solution and what I learnt. 
 ## Level 0 -> 1
 ### Objective 
 Log into the game using SSH. Given that the username and password are bandit0, host is bandit.labs.overthewire.org, and port is 2220. Read file 'readme' in home directory to obtain password. 
@@ -14,12 +16,7 @@ cat readme
 ```
 [Screenshot 1](screenshots/level%2001-1.png) | [Screenshot 2](screenshots/level%2001-2.png)
 
-SSH connected me to the port, and then I entered the given password bandit0. ls command listed all the files in the home directory - there was only one called readme. cat command displayed the contents of the file, inside which there was the password to Level 1. 
-### Password 
-<details> 
-  <summary> Spoiler </summary> 
-  6y2kwnwK6grgvwvpvLaa2T1cpFEKOhNR
-</details>
+`ssh` connected me to the port, and then I entered the given password bandit0. `ls` command listed all the files in the home directory - there was only one called readme. `cat` command displayed the contents of the file, inside which there was the password to Level 1. 
 
 ## Level 1 -> 2
 ### Objective 
@@ -35,12 +32,7 @@ cat ./-
 ```
 [Screenshot of Terminal](screenshots/level12.png) 
 
-`cat -` didn't work because - is a special command. To bypass this, I had to specify the folder using `./`  to show that - is a file name. 
-### Password 
-<details>
-  <summary> Spoiler </summary>
-  PK8fYLZg2hnHSz83plBL1iEPKdD3QToB
-</details>
+`cat -` didn't work because `-` is a special command. To bypass this, I had to specify the folder using `./`  to show that `-` is a file name. 
 
 ## Level 2 -> 3 
 ### Objective 
@@ -57,11 +49,6 @@ cat -- "--spaces in this filename--"
 [Screenshot of Terminal](screenshots/level23.png)
 
 A file name with spaces needs to be put in quotes. However, because the filename starts with --, it is seen as passing an option. Starting with a -- is a signal that everything after -- is the filename. 
-### Password 
-<details>
-  <summary> Spoiler </summary>
-  7ZZ2LFrykP2zEyvBl4m3clcL7tGYJPME
-</details>
 
 ## Level 3 -> 4 
 ### Objective 
@@ -82,11 +69,6 @@ cat ...Hiding-From-You
 [Screenshot of Terminal](screenshots/level34.png)
 
 Files that start with . are hidden, and cannot be seen with `ls`. Therefore, `ls -a` has to be used to see *all* the files in the directory. 
-### Password 
-<details> 
-  <summary> Spoiler </summary>
-  xzTXq1rDJQVVAzdv5cHq1TQytTWufAMq
-</details>
 
 ## Level 4 -> 5 
 ### Objective
@@ -108,8 +90,77 @@ cat ./-file07
 [Screenshot of Terminal](screenshots/level45.png)
 
 `file ./*` shows the file types of all the files in the folder inhere. file07 is the only one said to be ASCII text, so catting (?? is that a word) into that gives the password. 
-### Password 
-<details>
-  <summary> Spoiler </summary>
-  6C7h9GD8M6ai5nr7wo1RonrzFjj9yIrG
-</details>
+
+## Level 5 -> 6 
+### Objective 
+Find the password for Level 6, which is stored in a human readable, non-executable file which is 1033 bytes in the inhere directory. 
+### Commands Used 
+- `cd`
+- `find` : Searches for files and directories based on conditions like name, size, type etc.
+- `file`
+- `cat`
+### Solution 
+```bash
+ssh bandit5@bandit.labs.overthewire.org -p 2220
+cd inhere
+ls
+find . -size 1033c
+file ./maybehere07/.file2
+cat ./maybehere07/.file2
+```
+[Screenshot of Terminal](screenshots/level56.png)
+
+In this case, there were many ASCII text files so doing the `find` command by size was more efficient. 
+
+## Level 6 -> 7 
+### Objective 
+Find the password, stored anywhere on the server with the following properties: owned by user bandit7, owned by group bandit6 and 33 bytes in size. 
+### Commands Used 
+- `find`
+- `cat`
+### Solution 
+```bash
+ssh bandit6@bandit.labs.overthewire.org -p 2220 
+find / -user bandit7 -group bandit6 -size 33c 2>/dev/null
+cat /var/lib/dpkg/info/bandit7.password
+```
+[Screenshot of Terminal](screenshots/level67.png)
+### Explanation 
+Format for find command: 
+`find <where to start> <condition1> <condition2> ...`
+
+Where to start: 
+- `.` : Is used when the file to be found is within your current folder or its subfolders 
+- `/` : A general search of the entirety of the server
+
+Conditions: 
+- `find . -name "*.txt"` finds all files with the specified name. Supports wildcards. `-iname` can be used to ignore case sensitivity.
+- `find . -type f` for regular files and `find . -type d` for directories. 
+- `find . -size 1033c` for size. `+` and `-` before the value means "greater than"/"less than". No symbol means exact value. 
+- `find / -user bandit7 -group bandit6` for owners.
+  
+`2>/dev/null` redirects stderr, the error channel (stream 2) to `/dev/null` which is a fake file that discards anything sent to it. 
+
+## Level 7 -> 8 
+### Objective 
+Find the password for the next level which is stored in the file data.txt next to the word millionth
+### Commands Used 
+- `ls`
+- `grep` : Searches for specific text patterns inside files
+### Solution 
+```bash
+ssh bandit7@bandit.labs.overthewire.og -p 2220
+ls
+grep millionth data.txt
+```
+[Screenshot of Terminal](screenshots/level78.png)
+### Explanation 
+`grep` searches through text and prints out every line that matches the given pattern 
+- `-i` : Ignores cases
+- `-r` : Searches for the text in the current folder and subfolders
+- `-n` : Shows the line number of the match
+- `-c` : Counts the number of lines that match
+- `-w` : Whole word
+
+## Level 8 -> 9 
+
