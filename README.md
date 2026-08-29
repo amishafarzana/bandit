@@ -15,7 +15,7 @@ ls
 cat readme
 ```
 [Screenshot 1](screenshots/level%2001-1.png) | [Screenshot 2](screenshots/level%2001-2.png)
-
+### Explanation 
 `ssh` connected me to the port, and then I entered the given password bandit0. `ls` command listed all the files in the home directory - there was only one called readme. `cat` command displayed the contents of the file, inside which there was the password to Level 1. 
 
 ## Level 1 -> 2
@@ -31,7 +31,7 @@ ls
 cat ./-
 ```
 [Screenshot of Terminal](screenshots/level12.png) 
-
+### Explanation 
 `cat -` didn't work because `-` is a special command. To bypass this, I had to specify the folder using `./`  to show that `-` is a file name. 
 
 ## Level 2 -> 3 
@@ -47,7 +47,7 @@ ls
 cat -- "--spaces in this filename--"
 ```
 [Screenshot of Terminal](screenshots/level23.png)
-
+### Explanation 
 A file name with spaces needs to be put in quotes. However, because the filename starts with --, it is seen as passing an option. Starting with a -- is a signal that everything after -- is the filename. 
 
 ## Level 3 -> 4 
@@ -67,7 +67,7 @@ ls -a
 cat ...Hiding-From-You
 ```
 [Screenshot of Terminal](screenshots/level34.png)
-
+### Explanation 
 Files that start with . are hidden, and cannot be seen with `ls`. Therefore, `ls -a` has to be used to see *all* the files in the directory. 
 
 ## Level 4 -> 5 
@@ -88,7 +88,7 @@ file ./*
 cat ./-file07
 ```
 [Screenshot of Terminal](screenshots/level45.png)
-
+### Explanation 
 `file ./*` shows the file types of all the files in the folder inhere. file07 is the only one said to be ASCII text, so catting (?? is that a word) into that gives the password. 
 
 ## Level 5 -> 6 
@@ -178,9 +178,7 @@ sort data.txt | uniq -u
 ```
 [Screenshot of Terminal](screenshots/level89.png)
 
-`|` feeds the newly sorted output into the next command 
-
-Note: `>` can be used to feed the output into a new file
+Note: `|` feeds the newly sorted output into the next command. `>` can be used to feed the output into a new file
 ## Level 9 -> 10 
 ### Objective 
 Find the password for the next level, which is stored in the file data.txt in one of the few human-readable strings, preceded by several ‘=’ characters.
@@ -194,7 +192,7 @@ ls
 strings data.txt | grep "==="
 ```
 [Screenshot of Terminal](screenshots/level910.png)
-
+### Explanation 
 I tried doing just `grep "===" data.txt` at first, but that didn't work because it read the binary data as well. `strings` was necessary to narrow it down to the human readable text characters first. 
 ## Level 10 -> 11 
 ### Objective 
@@ -208,6 +206,22 @@ ls
 base64 -d data.txt
 ```
 [Screenshot of Terminal](screenshots/level1011.png)
-
+### Explanation
 Base64 is binary data represented as plain text using 64 ASCII characters. It can usually be identified by = or == padding at the end. `base64 -d` converts it to human readable text. 
 ## Level 11 -> 12 
+### Objective 
+Find the password for the next level, which is stored in the file data.txt, where all lowercase (a-z) and uppercase (A-Z) letters have been rotated by 13 positions
+### Commands Used 
+- `ls`
+- `tr` : Translate, it takes whatever text you give and swaps out specified characters 
+### Solution 
+```bash
+ls
+tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt
+```
+[Screenshot of Terminal](screenshots/level1112.png)
+### Explanation 
+`tr SET1 SET2 < inputfile.txt`
+- Characters in SET1 get swapped out for the characters in corresponding positions in SET2
+- `<` feeds the file's contents into `tr`
+## Level 12 -> 13 
