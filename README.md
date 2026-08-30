@@ -196,7 +196,7 @@ strings data.txt | grep "==="
 I tried doing just `grep "===" data.txt` at first, but that didn't work because it read the binary data as well. `strings` was necessary to narrow it down to the human readable text characters first. 
 ## Level 10 -> 11 
 ### Objective 
-Find the password for the next level stored in the file data.txt, which contains base64 encoded data
+Find the password for the next level stored in the file data.txt, which contains base64 encoded data.
 ### Commands Used 
 - `ls`
 - `base64 -d` : Decodes Base64 to human readable text
@@ -225,3 +225,59 @@ tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt
 - Characters in SET1 get swapped out for the characters in corresponding positions in SET2
 - `<` feeds the file's contents into `tr`
 ## Level 12 -> 13 
+### Objective 
+Find the password for the next level is stored in the file data.txt, which is a hexdump of a file that has been repeatedly compressed. 
+### Commands Used 
+- `ls`
+- `mktemp -d` : Created a temporary directory with a random name that is guaranteed to be unique. `-d` specified that it should be a directory, otherwise `mktemp` creates a temporary file.
+- `cp` : Copies file from one place to another. `~` is home directory, `.` is current directory.
+- `xxd` : Hexdump, `-r` means reverse and converts hex text -> binary.
+- `file`
+- `mv` : Move, renames the file without changing its contents.
+- `gunzip` : Decompresses .gz files 
+- `bunzip2` : Decompresses .bz2 files 
+- `tar -x` : Extracts tar file
+- `cat`
+### Solution 
+```bash
+ls
+mktemp -d
+cd /tmp/tmp.VQ4SrK2nnI
+cp ~/data.txt .
+xxd -r data.txt > data.bin
+file data.bin #Returns gzip compressed data 
+mv data.bin data.gz
+gunzip data.gz
+file data #Returns bzip2 compressed data
+mv data data.bz2
+bunzip2 data.bz2
+file data #Returns gzip compressed data
+mv data data.gz
+gunzip data.gz
+file data #Returns POSIX tar archive (GNU)
+mv data data.tar
+tar -xf data.tar
+ls
+file data5.bin #Returns POSIX tar archive (GNU)
+tar -xf data5.bin
+ls
+file data6.bin #Returns bzip2 compressed data
+mv data6.bin data6.bz2
+bunzip2 data6.bz2
+file data6 #Returns POSIX tar archive (GNU)
+mv data6 data6.tar
+tar -xf data6.tar
+ls
+file data8.bin #Returns gzip compressed data
+mv data8.bin data8.gz
+gunzip data8.gz
+file data8
+cat data8
+```
+[Screenshot 1](screenshots/level1213-1.png) | [Screenshot 2](screenshots/level1213-2.png) 
+### Explanation 
+This lowkey stressed me out at first but was really fun. 
+A few things to note - 
+- `.gz` and `.bz2` show that the file is compressed. So when decompressed, it loses that extension entirely and is not replaced by anything.
+- tar is a bundle of files. It needs to be *extracted* from, which is why `-x` has to be used. `-f` specifies the file.
+- `mv` can also be used to move files across different directories etc. 
