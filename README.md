@@ -276,8 +276,76 @@ cat data8
 ```
 [Screenshot 1](screenshots/level1213-1.png) | [Screenshot 2](screenshots/level1213-2.png) 
 ### Explanation 
-This lowkey stressed me out at first but was really fun. 
-A few things to note - 
 - `.gz` and `.bz2` show that the file is compressed. So when decompressed, it loses that extension entirely and is not replaced by anything.
 - tar is a bundle of files. It needs to be *extracted* from, which is why `-x` has to be used. `-f` specifies the file.
 - `mv` can also be used to move files across different directories etc. 
+## Level 13 -> 14 
+### Objective 
+Log into level 14 using a private SSH key. Find the password for the next level is stored in /etc/bandit_pass/bandit14
+### Commands Used 
+- `ls -a` : Lists all the files in long format ie with detailed information like permissions, owner, size and date
+- `chmod` : Change mode, it changes permissions for owner, group and others represented as three digits
+- `i` : Identity file, used to indicate the private key
+- `echo` : Can be used to print text back to the screen or to a file
+### Solution 
+```bash
+ssh bandit13@bandit.labs.overthewire.org -p 2220
+ls
+cat sshkey.private
+exit
+echo "-----BEGIN OPENSSH PRIVATE KEY-----
+***
+-----END OPENSSH PRIVATE KEY-----" > private.key
+ls -la
+chmod 600 private.key
+ls -la
+ssh bandit14@bandit.labs.overthewire.org -p 2220 -i private.key
+cat /etc/bandit_pass/bandit14
+```
+[Screenshot 1](screenshots/level1314-1.png) | [Screenshot 2](screenshots/level1314-2.png) | [Screenshot 3](screenshots/level1314-3.png)
+
+### Explanation 
+`chmod 600` means that the owner can read and write, while group and others can do nothing
+- 0 : `---` : No permissions
+- 1 : `--x` : Execute only
+- 2 : `-w-` : Write only
+- 3 : `-wx` : Write and execute (3+1)
+- 4 : `r--` : Read only
+- 5 : `r-x` : Read and execute (4+1)
+- 6 : `rw-` : Read and write (4+2)
+- 7 : `rwx` : Full access ie read, write and execute (4+2+1)
+
+<details> 
+  <summary> oops </summary>
+  I hated this level so much. I spent so much time on this task because I couldn't figure out why `ls -la` and `chmod` weren't working. I completely forgot that I was working remotely from Windows Terminal. Lesson learned, I switched to Linux after this.  
+</details>
+
+## Level 14 -> 15 
+### Objective 
+Find the password for the next level by submitting the password of the current level to port 30000 on localhost.
+### Commands Used 
+- `nc` : netcat, a tool for reading and writing data across network connections
+### Solution 
+```bash
+ssh bandit14@bandit.labs.overthewire.org -p 2220 -i private.key
+nc localhost 30000
+aaWecNkG4FhxJQxz07uiwzVP6bJiYS65
+```
+[Screenshot of Terminal](screenshots/level1415.png)
+## Level 15 -> 16 
+### Objective 
+Find the password for the next level by submitting the password of the current level to port 30001 on localhost using SSL/TLS encryption.
+### Commands Used 
+- `openssl s_client` : Diagnostic tool used to test, debug, and analyze SSL/TLS connections to remote servers
+### Solution 
+```bash
+ssh bandit15@bandit.labs.overthewire.org -p 2220
+openssl s_client -connect localhost:30001
+pbLYuZtTg4MgaqfJx8jbA9gKKGqM68A7
+```
+[Screenshot 1](screenshots/level1516-1) | [Screenshot 2](screenshots/level1516-2)
+### Explanation 
+`s_client` does the same thing as `nc` but over an encrypted connection. Basic syntax: 
+```bash
+openssl s_client -connect hostname:port
+```
