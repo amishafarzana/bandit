@@ -317,7 +317,7 @@ cat /etc/bandit_pass/bandit14
 
 <details> 
   <summary> oops </summary>
-  I hated this level so much. I spent so much time on this task because I couldn't figure out why `ls -la` and `chmod` weren't working. I completely forgot that I was working remotely from Windows Terminal. Lesson learned, I switched to Linux after this.  
+  I hated this level so much. I spent so much time on this task because I couldn't figure out why `ls -la` and `chmod` weren't working. I completely forgot that I was working remotely from Windows Terminal. I switched to Ubuntu after this.  
 </details>
 
 ## Level 14 -> 15 
@@ -343,7 +343,7 @@ ssh bandit15@bandit.labs.overthewire.org -p 2220
 openssl s_client -connect localhost:30001
 pbLYuZtTg4MgaqfJx8jbA9gKKGqM68A7
 ```
-[Screenshot 1](screenshots/level1516-1) | [Screenshot 2](screenshots/level1516-2)
+[Screenshot 1](screenshots/level1516-1.png) | [Screenshot 2](screenshots/level1516-2.png)
 ### Explanation 
 `s_client` does the same thing as `nc` but over an encrypted connection. Basic syntax: 
 ```bash
