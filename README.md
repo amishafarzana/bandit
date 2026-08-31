@@ -349,3 +349,58 @@ pbLYuZtTg4MgaqfJx8jbA9gKKGqM68A7
 ```bash
 openssl s_client -connect hostname:port
 ```
+## Level 16 -> 17 
+### Objective 
+Find the password from one of the ports between 31000 and 32000 over SSL/TLS. 
+### Commands Used 
+- `nmap` : Command-line utility used for network discovery, port scanning, and security auditing
+- `openssl s_client`
+- `echo`
+- `ls -la`
+- `chmod`
+### Solution 
+```bash
+ssh bandit16@bandit.labs.overthewire.org -p 2220 
+nmap -p 31000-32000 localhost
+openssl s_client -connect localhost:31046 #SSL handshake failed
+openssl s_client -connect localhost:31518 #Connected okay, but nothing showed up when password was entered
+openssl s_client -connect localhost:31691 #SSL handshake failed
+openssl s_client -connect localhost:31790 #Connected, returned private key when password was entered
+exit
+echo "-----BEGIN OPENSSH PRIVATE KEY-----
+***
+-----END OPENSSH PRIVATE KEY-----" > sshprivate.key
+ls -la
+chmod 600 sshprivate.key
+ls -la
+ssh bandit17@bandit.labs.overthewire.org -p 2220 -i sshprivate.key
+```
+[Screenshot 1](screenshots/level1617-1.png) | [Screenshot 2](screenshots/level1617-2.png) | [Screenshot 3](screenshots/level1617-3.png)
+
+## Level 17 -> 18 
+### Objective 
+Find the password from the file passwords.new. It is the only line that has been changed between passwords.old and passwords.new 
+### Commands Used 
+- `ls -la`
+- `diff` : Analyzes text files line by line and highlights the differences
+### Solution 
+```bash
+ssh bandit17@bandit.labs.overthewire.org -p 2220 
+ls -la
+diff passwords.old passwords.new
+```
+[Screenshot of Terminal](screenshots/level1718.png)
+
+## Level 18 -> 19 
+### Objective 
+Find the password from the readme file in home directory, though someone has modified .bashrc to log you out when you log in with SSH. 
+### Commands Used 
+- `ssh`
+- `cat`
+### Solution 
+```bash
+ssh bandit18@bandit.labs.overthewire.org -p 2220 cat readme
+```
+[Screenshot of Terminal](screenshots/level1819.png)
+### Explanation 
+SSH lets you run a single command as a part of the connection itself, without needing a full interactive shell. By doing this, the command runs before you can be logged out.
