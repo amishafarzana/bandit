@@ -404,3 +404,54 @@ ssh bandit18@bandit.labs.overthewire.org -p 2220 cat readme
 [Screenshot of Terminal](screenshots/level1819.png)
 ### Explanation 
 SSH lets you run a single command as a part of the connection itself, without needing a full interactive shell. By doing this, the command runs before you can be logged out.
+
+## Level 19 -> 20 
+### Objective 
+To gain access to the next level, you should use the setuid binary in the homedirectory. Execute it without arguments to find out how to use it. The password for this level can be found in the usual place (/etc/bandit_pass), after you have used the setuid binary.
+### Commands Used
+- `ls -la`
+- `bandit20-do`
+### Solution 
+```bash
+ssh  bandit19@bandit.labs.overthewire.org -p 2220
+ls -la
+./bandit20-do cat /etc/bandit_pass/bandit20
+```
+[Screenshot of Terminal](screenshots/level1920.png)
+### Explanation 
+Every process has at least two UIDs - real UID and effective UID which are initially the same. `bandit20-do` changes  the effective UID from bandit19 to bandit20 so that we can access files with bandit20's owner permissions. This is not a security hole, it is usually intentionally done. 
+
+## Level 20 -> 21 
+### Objective 
+There is a setuid binary in the homedirectory that does the following: it makes a connection to localhost on the port you specify as a commandline argument. It then reads a line of text from the connection and compares it to the password in the previous level (bandit20). If the password is correct, it will transmit the password for the next level (bandit21).
+### Commands Used 
+- `nc -l -p`
+- `suconnect`
+### Solution 
+```bash
+ssh bandit20@bandit.labs.overthewire.org -p 2220
+nc -l -p 12345
+./suconnect 12345
+bW9kBv5WC3P4yoDyf12LSdGuNz5ka6hY
+```
+[Screenshot 1](screenshots/level2021.png) | [Screenshot 2](screenshots/level2021.png)
+### Explanation 
+`nc -l` acts as a server: it opens a socket and listens for a connection. `suconnect` acts as the client and reaches out to connect to a listener. 
+
+## Level 21 -> 22 
+### Objective 
+There is a cron job that runs periodically. Find out what it does by investigating the filesystem, use that knowledge to find the password for the next level. 
+### Commands Used 
+- `ls`
+- `cat`
+### Solution 
+```bash
+ssh bandit21@bandit.labs.overthewire.org -p 2220
+ls /etc/cron.d/
+cat /etc/cron.d/cronjob_bandit22
+cat /usr/bin/cronjob_bandit22.sh
+cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+```
+[Screenshot of Terminal](screenshots/level2122.png)
+### Explanation 
+cron is a built-in time-based job scheduler used in Linux. It runs continuously in the background to automatically execute commands, scripts, or tasks at predefined intervals without human intervention. These scheduled tasks are called cron jobs.
