@@ -434,7 +434,7 @@ nc -l -p 12345
 ./suconnect 12345
 bW9kBv5WC3P4yoDyf12LSdGuNz5ka6hY
 ```
-[Screenshot 1](screenshots/level2021.png) | [Screenshot 2](screenshots/level2021.png)
+[Screenshot 1](screenshots/level2021-1.png) | [Screenshot 2](screenshots/level2021-2.png)
 ### Explanation 
 `nc -l` acts as a server: it opens a socket and listens for a connection. `suconnect` acts as the client and reaches out to connect to a listener. 
 
